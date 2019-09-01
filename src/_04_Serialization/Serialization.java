@@ -1,10 +1,15 @@
 package _04_Serialization;
 
-import org.junit.Test;
-
-import java.io.*;
-
 import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 /*
  * Serialization is the process of converting an object into a stream of bytes
@@ -40,7 +45,8 @@ public class Serialization {
 	 * and ObjectOutputStream.
 	 */
 	private static void save(SaveData data) {
-		try (FileOutputStream fos = new FileOutputStream(new File(DATA_FILE)); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+		try (FileOutputStream fos = new FileOutputStream(new File(DATA_FILE)); 
+		ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(data);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -48,7 +54,8 @@ public class Serialization {
 	}
 
 	private static SaveData load() {
-		try (FileInputStream fis = new FileInputStream(new File(DATA_FILE)); ObjectInputStream ois = new ObjectInputStream(fis)) {
+		try (FileInputStream fis = new FileInputStream(new File(DATA_FILE)); 
+		ObjectInputStream ois = new ObjectInputStream(fis)) {
 			return (SaveData) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();

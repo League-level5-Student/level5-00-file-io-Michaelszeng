@@ -53,7 +53,34 @@ public class ToDoList implements ActionListener{
 		p.add(rem);
 		p.add(save);
 		p.add(load);
+		add.addActionListener(this);
+		view.addActionListener(this);
+		rem.addActionListener(this);
+		save.addActionListener(this);
+		load.addActionListener(this);
 		f.pack();
+		
+		try {
+			String allTasks = "";
+			FileReader r = new FileReader("src/_03_To_Do_List/tasks.txt");
+			int c = r.read();
+			while (c != -1) {
+				char charC = (char) c;
+				allTasks += charC;
+				c = r.read();
+			}
+			r.close();
+			String[] array = allTasks.split(":", -1);
+			for (int i=0; i<array.length; i++) {
+				tasks.add(array[i]);
+			}
+//			for (String s : tasks) {
+//				System.out.println(s);
+//			}
+		}
+		catch(IOException e2) {
+			e2.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -66,40 +93,45 @@ public class ToDoList implements ActionListener{
 		if (e.getSource() == add) {
 			String newTask = JOptionPane.showInputDialog("Enter Task To Add: ");
 			tasks.add(newTask);
+			System.out.println("task added!\n");
 		}
 		else if (e.getSource() == view) {
+			System.out.println("Task List:");
 			for (String s : tasks) {
-				System.out.println(s);
-				System.out.println();
+				System.out.println(" - " + s);
 			}
+			System.out.println();
 		}
 		else if (e.getSource() == rem) {
-			while (true) {
-				String task = JOptionPane.showInputDialog("Enter Task To Delete: ");
+			String status = "notRem";
+			if (tasks.size() != 0) {
+				String task = JOptionPane.showInputDialog("Please Enter Valid Task To Delete: ");
 				for (int i=0; i<tasks.size(); i++) {
 					String s = tasks.get(i);
 					if (task.contentEquals(s)) {
 						tasks.remove(i);
-						System.out.println("Task Removed");
-						System.out.println();
-						break;
+						System.out.println("Task Removed\n");
+						status = "rem";
 					}
-					else {
-						System.out.println("Sorry, Task does not exist.");
-						System.out.println();
-					}
+				}
+				if  (!(status.equals("rem"))) {
+					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
 			}
-			
+			else {
+				System.out.println("Sorry, you have no tasks");
+			}
 		}
 		else if (e.getSource() == save) {
+			String allTasks = "";
+			for (String s : tasks) {
+				allTasks += s+":";
+			}
 			try {
 				FileWriter f = new FileWriter("src/_03_To_Do_List/tasks.txt");
-				String allTasks = "";
-				for (String s : tasks) {
-					allTasks += s+"\n";
-				}
-				f.write(allTasks);
+				f.write(allTasks.substring(0, allTasks.length()-1));
+				f.close();
+				System.out.println("tasks saved to file!\n");
 					
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -107,18 +139,28 @@ public class ToDoList implements ActionListener{
 			}
 		}
 		else if (e.getSource() == load) {
+			String s = JOptionPane.showInputDialog("Please enter file name in this package:" );
 			try {
-				FileReader r = new FileReader("src/_03_To_Do_List/tasks.txt");
+				FileReader r = new FileReader("src/_03_To_Do_List/" + s);
 				int c = r.read();
 				if (c == -1) {
-					System.out.println("Sorry, No Tasks So Far!");
-					System.out.println();
+					System.out.println("Sorry, No Tasks In This File!\n");
+					return;
 				}
+				else {
+					System.out.println("Tasks in " + s + ":");
+				}
+				String allTasks = "";
 				while (c != -1) {
-					System.out.println((char) c);
-					System.out.println();
+					allTasks += (char) c;
 					c = r.read();
 				}
+				String[] array = allTasks.split(":", -1);
+				for (String s2 : array) {
+					System.out.println(" - " + s2);
+				}
+				System.out.println();
+				r.close();
 			}
 			catch(IOException e2) {
 				e2.printStackTrace();
